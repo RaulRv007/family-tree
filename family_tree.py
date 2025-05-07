@@ -1,3 +1,4 @@
+import math
 class Node():
     def __init__(self, name, parent, kids):
         self.parent = parent
@@ -78,28 +79,91 @@ class Tree():
                     else:
                         break
                 return (counter1 + 1, counter2)
-                
+    
+    def find_faster(self, member1, member2):
+        if member1.generation == 0 or member2.generation == 0:
+            lower_gen = min(member1.generation, member2.generation)
+        else:
+            counter = 0
+            node1 = member1
+            node2 = member2
+            while node1.parent is not node2.parent:
+                counter += 1
+                if node1.parent is not None:
+                    node1 = node1.parent
+                    node2 = node2.parent
+                else:
+                    break
+            counter += 1
+            lower_gen = min(member1.generation, member2.generation) - counter
+
+        return (member1.generation - lower_gen + 1, member2.generation - lower_gen + 1)
+    
+    def find_queue(self, member1, member2):
+        node1 = member1
+        node2 = member2
+        counter = 0
+        counter2 = 0
+        if node1 == node2: return (0, 0)
+        if node1.generation == node2.generation:
+            while node1 != node2:
+                counter += 1
+                node1 = node1.parent
+                node2 = node2.parent
+            
+            return (counter + 1, counter + 1)
+        else:
+            gen_diff = abs(member1.generation - member2.generation)
+            if member1.generation > member2.generation:
+                for i in range(gen_diff):
+                    node1 = node1.parent
+                    counter += 1
+            else:
+                for i in range(gen_diff):
+                    node2 = node2.parent
+                    counter2 += 1
+            
+            while node1 != node2:
+                counter += 1
+                counter2 += 1
+                node1 = node1.parent
+                node2 = node2.parent
+            
+            return (counter + 1, counter2 + 1)
 
         
-members = [
-    Node('A', None, None),
-    Node('B', 'A', None),
-    Node('C', 'A', None),
-    Node('D', 'A', None),
-    Node('E', 'D', None),
-    Node('F', 'D', None),
-    Node('G', 'E', None),
-    Node('H', 'E', None),
-    Node('K', 'F', None),
-    Node('L', 'F', None),
-    Node('M', 'L', None),
-    Node('N', 'L', None),
-    Node('Ñ', 'N', None),
-    Node('O', 'N', None),
-]
-tree = Tree(members)
-tree.generate_tree()
-print(f'generation of O: {tree.members[-1].generation}')
-print(f'generation of E: {tree.members[4].generation}')
+    
+    def ordinal(self, n: int):
+        if 11 <= (n % 100) <= 13:
+            suffix = 'th'
+        else: 
+            suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+        return str(n) + suffix
+                
+    def get_relationship(self, member1, member2):
+        value = self.find_queue(member1, member2)
+        if value[0] < 3 or value[1] < 3:
+            if value[0] == value[1]:
+                return f'sibling'
+            elif abs(value[0] - value[1]) == 1 and min(value[0], value[1]) < 3:
+                return f'nephew/niece'
+            elif min(value[0], value[1]) == 1:
+                if max(value[1], value[0]) == 2:
+                    return f'child'
+                elif max(value[1], value[0]) == 3:
+                    return f'grandchild'
+                elif max(value[1], value[0]) == 4 and min(value[1], value[0]) < 3:
+                    return f'great grandchild'
+                else:
+                    return f'{self.ordinal(max(value[1], value[0]) - 3) } great grandchild'
+            elif max(value[1], value[0]) == 4 and min(value[0], value[1]) < 3:
+                return f'grand nephew or niece'
 
-print(tree.find_relation(members[4], members[-1]))
+        elif value[0] >= 3 and value[1] >= 3:
+            if value[0] == value[1]:
+                return f'{self.ordinal(value[0] - 2)} cousin'
+            else:
+                return f'{self.ordinal(min(value[0], value[1]) - 2)} cousin {abs(value[0] - value[1])}x removed'
+
+        elif value[0] == value[1]:
+            return f'{self.ordinal(value[0] - 1)} cousin'

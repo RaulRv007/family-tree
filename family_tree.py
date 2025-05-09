@@ -167,3 +167,30 @@ class Tree():
 
         elif value[0] == value[1]:
             return f'{self.ordinal(value[0] - 1)} cousin'
+    
+    def get_relationship2(self,value):
+        if value[0] < 3 or value[1] < 3:
+            if value[0] == value[1]:
+                return f'sibling'
+            elif abs(value[0] - value[1]) == 1 and min(value[0], value[1]) < 3:
+                return f'nephew/niece'
+            elif min(value[0], value[1]) == 1:
+                if max(value[1], value[0]) == 2:
+                    return f'child'
+                elif max(value[1], value[0]) == 3:
+                    return f'grandchild'
+                elif max(value[1], value[0]) == 4 and min(value[1], value[0]) < 3:
+                    return f'great grandchild'
+                else:
+                    return f'{self.ordinal(max(value[1], value[0]) - 3) } great grandchild'
+            elif max(value[1], value[0]) == 4 and min(value[0], value[1]) < 3:
+                return f'grand nephew or niece'
+
+        elif value[0] >= 3 and value[1] >= 3:
+            if value[0] == value[1]:
+                return f'{self.ordinal(value[0] - 2)} cousin'
+            else:
+                return f'{self.ordinal(min(value[0], value[1]) - 2)} cousin {abs(value[0] - value[1])}x removed'
+
+        elif value[0] == value[1]:
+            return f'{self.ordinal(value[0] - 1)} cousin'

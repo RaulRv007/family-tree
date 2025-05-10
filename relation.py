@@ -27,27 +27,20 @@ members = [
 tree = Tree(members)
 tree.generate_tree()
 
-input1 = input('insert member 1 name: ')
-input2 = input('insert member 2 name: ')
-member1 = members[1]
-member2 = members[9]
-
-#My parent’s sibling’s child
-#is my cousin
 relation_dict = {
-    'great grandparent' : 3,
+    'great-grandparent' : (3, 0),
     'grandparent' : (2, 0),
     'parent' : (1, 0),
     'uncle' : (1, 0),
     'sibling' : (1, 1), 
     'cousin' : (2, 2),
-    'nephew' : (2, 3),
+    'nephew' : (1, 2),
     'child' : (0, 1),
     'nothing': (0, 0),
-    'grandchild' : -2
+    'grandchild' : (0, 2),
+    'great-grandchild' : (0, 3)
 }
 long_input = input("enter relation: ").lower().split()
-print("Original input tokens:", long_input)
 
 owns = []
 relation = ""
@@ -69,61 +62,61 @@ owns = filtered_owns
 i = 0
 while i < len(owns):
     if i > 0:
-        if owns[i] == "sibling" and owns[i - 1] == "cousin":
+        if owns[i] == "sibling" and owns[i - 1] == "cousin"  and len(owns) >= 1:
             owns.pop(i)
             continue
-        if owns[i] == "cousin" and owns[i - 1] == "sibling":
+        if owns[i] == "cousin" and owns[i - 1] == "sibling"  and len(owns) >= 1:
             owns.pop(i - 1)
             i -= 1
             continue
 
-    if owns[i] == "cousin" and relation == "sibling":
+    if owns[i] == "cousin" and relation == "sibling"  and len(owns) >= 1:
         relation = "cousin"
         owns.pop(i)
         continue
-    if owns[i] == "sibling" and relation == "cousin":
+    if owns[i] == "sibling" and relation == "cousin" and len(owns) >= 1:
         owns.pop(i)
         continue
-    if owns[i] == "sibling" and relation == "sibling":
+    if owns[i] == "sibling" and relation == "sibling" and len(owns) >= 1:
         owns.pop(i)
         continue
     i += 1
-
-if owns[0] == 'sibling' and len(owns) == 1:
-    owns[0] = 'nothing'
-
-print("Final owns list:", owns)
-print("Final relation:", relation)
-
 
 owner_relation = 1
 member_relation = 1
 
 for owner in owns:
-    owner_relation += relation_dict[owner][0]
-    member_relation += relation_dict[owner][1]
+    if owner not in relation_dict:
+        print(f"Unknown relation: {owner}")
+        continue
+    else:
+        owner_relation += relation_dict[owner][0]
+        member_relation += relation_dict[owner][1]
 
-if relation == 'parent':
-    owner_relation += relation_dict[relation][0] - 1
+
+if relation == 'parent' and owns == []:
+    owner_relation = max(0, owner_relation + relation_dict[relation][0] - 1)
     member_relation += relation_dict[relation][1] - 1
+if relation == 'child' and owns == []:
+    owner_relation = max(0, owner_relation + relation_dict[relation][0] - 1)
+    member_relation += relation_dict[relation][1] - 1
+    
 else:
     owner_relation += relation_dict[relation][0]
     member_relation += relation_dict[relation][1]
 
 
 
-print(owner_relation)
-print(member_relation)
+print((owner_relation, member_relation))
 
-print(owns)
-print(relation)
 print(f'relation: {tree.get_relationship2((owner_relation, member_relation))}')
 
 
 
 
-
 '''
+input1 = input('insert member 1 name: ')
+input2 = input('insert member 2 name: ')
 for i in members:
     if input1 == i.name:
         member1 = i

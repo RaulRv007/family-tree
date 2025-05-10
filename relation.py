@@ -1,6 +1,8 @@
-from family_tree import Node, Tree
-#from number_parser import parse_ordinal
+from family_tree import Node, Tree, get_relationship_with_val
 
+
+# to find the relationship between 2 members of a given tree
+# uncomment this:
 members = [
     Node('A', None, None),
     Node('B', 'A', None),
@@ -27,7 +29,28 @@ members = [
 tree = Tree(members)
 tree.generate_tree()
 
-relation_dict = {
+
+input1 = input('insert member 1 name: ')
+input2 = input('insert member 2 name: ')
+for i in members:
+    if input1 == i.name:
+        member1 = i
+    if input2 == i.name:
+        member2 = i
+
+print(f'generation of {member1.name}: {member1.generation}')
+print(f'generation of {member2.name}: {member2.generation}')
+print(tree.find_queue(member1, member2))
+print(tree.get_relationship(member1, member2))
+
+
+
+
+
+
+
+#to find the relation in natural language from myself to a long distance family member uncomment this:
+'''relation_dict = {
     'great-grandparent' : (3, 0),
     'grandparent' : (2, 0),
     'parent' : (1, 0),
@@ -105,26 +128,16 @@ else:
     owner_relation += relation_dict[relation][0]
     member_relation += relation_dict[relation][1]
 
+if owns == []:
+    owner_relation = relation_dict[relation][0] + 1
+    member_relation = relation_dict[relation][1] + 1
 
 
-print((owner_relation, member_relation))
 
-print(f'relation: {tree.get_relationship2((owner_relation, member_relation))}')
+print(f'distance from common ancestor: {(owner_relation, member_relation)}')
 
+print(f'relation: {get_relationship_with_val((owner_relation, member_relation))}')
 
 
 
 '''
-input1 = input('insert member 1 name: ')
-input2 = input('insert member 2 name: ')
-for i in members:
-    if input1 == i.name:
-        member1 = i
-    if input2 == i.name:
-        member2 = i
-'''
-
-'''print(f'generation of {member1.name}: {member1.generation}')
-print(f'generation of {member2.name}: {member2.generation}')
-print(tree.find_queue(member1, member2))
-print(tree.get_relationship(member1, member2))'''

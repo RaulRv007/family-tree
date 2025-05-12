@@ -11,17 +11,21 @@ class Tree():
         self.members = members
     
     def generate_tree(self):
-        for member in self.members:
-            for parent in self.members:
-                if parent.name == member.parent:
-                    parent.kids.append(member)
-                    member.parent = parent
+        name_to_node = {member.name: member for member in self.members}
 
+        for member in self.members:
+            if isinstance(member.parent, str) and member.parent in name_to_node:
+                parent_node = name_to_node[member.parent]
+                parent_node.kids.append(member)
+                member.parent = parent_node
+
+        for member in self.members:
             node = member
-            while node.parent != None:
+            while node.parent is not None:
                 member.generation += 1
                 node = node.parent
-                
+
+    #I know this name does not make any sense, but I thought I was gonna do somthing different
     def find_queue(self, member1, member2):
         node1 = member1
         node2 = member2

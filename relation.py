@@ -44,18 +44,13 @@ print(tree.find_queue(member1, member2))
 print(tree.get_relationship(member1, member2))
 
 
-
-
-
-
-
 #to find the relation in natural language from myself to a long distance family member uncomment this:
 '''relation_dict = {
     'great-grandparent' : (3, 0),
     'grandparent' : (2, 0),
     'parent' : (1, 0),
     'uncle' : (1, 0),
-    'sibling' : (1, 1), 
+    'sibling' : (1, 1),
     'cousin' : (2, 2),
     'nephew' : (1, 2),
     'child' : (0, 1),
@@ -137,7 +132,4 @@ if owns == []:
 print(f'distance from common ancestor: {(owner_relation, member_relation)}')
 
 print(f'relation: {get_relationship_with_val((owner_relation, member_relation))}')
-
-
-
 '''

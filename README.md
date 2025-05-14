@@ -30,7 +30,7 @@ family-tree/
 
 ---
 
-## 🧠 Design Explanation
+## 💡 Design Explanation
 
 The core design involves two primary data structures:
 
@@ -44,6 +44,44 @@ The core design involves two primary data structures:
 The relationships are derived by comparing both the *distance to a common ancestor* and *relative generations*.
 
 ---
+
+## 🧠 How the Algorithm Works (Step-by-Step)
+
+This section explains how the algorithm builds the family tree and figures out relationships between two members.
+
+### 1. Building the Tree (`generate_tree`)
+- Each family member is given as a `Node` with a name and optional parent name.
+- A dictionary (`name → Node`) is created to link names to their node objects.
+- For each node:
+  - If the node has a parent name, we look it up in the dictionary and:
+    - Replace the string with a reference to the actual parent node.
+    - Add this node to the parent's list of children.
+- Then, we calculate each node’s **generation number** by walking up through its parents until we reach the root (ancestor with no parent).
+
+### 2. Finding Distance Between Members (`find_queue`)
+- Start with both nodes (let's call them `node1` and `node2`).
+- First, if they're at different generations:
+  - Walk up the tree (follow the `.parent`) on the deeper node until both nodes are at the same generation level.
+- Now, both nodes are aligned by generation.
+- Then:
+  - Walk up the tree step-by-step on **both nodes at the same time**.
+  - Continue until the two nodes **point to the same parent** — this is their **common ancestor**.
+- Count how many steps it took each node to reach the common ancestor.
+  - Example: If `node1` took 3 steps and `node2` took 2, the result is `(3, 2)`.
+
+### 3. Determining Relationship (`get_relationship`)
+- Based on the distances from the common ancestor, the algorithm:
+  - Checks for close relationships like siblings, parent-child, grandchild, etc.
+  - If both members are at similar depths (e.g. cousins), it determines the cousin degree and how many generations apart they are.
+  - Uses rules like:
+    - Same depth → cousins
+    - One deeper → “x times removed”
+    - 1 depth apart and same parent → siblings
+    - >2 apart → great-grandchild or great-aunt/uncle, etc.
+
+This structure allows the algorithm to calculate human-readable relationships from just names and parents.
+
+
 
 ## 🔍 Pseudocode
 
